@@ -107,6 +107,23 @@ SPECIAL_CASES_TO_ALLOW = {
     "HiggsAudioV2TokenizerConfig": ["downsample_factor"],
     "CsmConfig": ["tie_codebooks_embeddings"],
     "DeepseekV2Config": ["norm_topk_prob"],
+    "Glm5NextConfig": [
+        "first_k_dense_replace",
+        "head_dim",
+        "hidden_act",
+        "indexer_rope_interleave",
+        "linear_allow_neg_eigval",
+        "linear_conv_kernel_dim",
+        "linear_key_head_dim",
+        "linear_num_key_heads",
+        "linear_num_value_heads",
+        "linear_value_head_dim",
+        "mhc_no_norm_weight",
+        "rope_interleave",
+        "scoring_func",
+        "topk_method",
+        "use_qk_norm",
+    ],
     "DeepseekV4Config": [
         # All BC / config-compat surface that the modeling code never reads but
         # checkpoints in the wild expose (so we keep accepting them in `__init__`):
@@ -363,9 +380,11 @@ def check_config_attributes():
             cls
             for name, cls in inspect.getmembers(
                 inspect.getmodule(_config_class),
-                lambda x: inspect.isclass(x)
-                and issubclass(x, PreTrainedConfig)
-                and inspect.getmodule(x) == inspect.getmodule(_config_class),
+                lambda x: (
+                    inspect.isclass(x)
+                    and issubclass(x, PreTrainedConfig)
+                    and inspect.getmodule(x) == inspect.getmodule(_config_class)
+                ),
             )
         ]
         for config_class in config_classes_in_module:
